@@ -37,7 +37,7 @@ socket.on('roomUsers', users => {
 // message submit
 msg.addEventListener('keyup', e => {
   const key = e.key
-  if (key === 'Enter' && !e.shiftKey) {
+  if (key === 'Enter' && !e.shiftKey && e.target.value.trim() !== '') {
     textSubmitBtn.click()
   }
 })
