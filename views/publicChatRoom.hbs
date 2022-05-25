@@ -1,0 +1,31 @@
+<div class="wrapper">
+  <div class='container chatroom-platform'>
+    <div class="profile-setting d-flex flex-column justify-content-between">
+      {{> leftColumn}}
+    </div>
+    <div class="online-users">
+      <div class='online-users-header'>
+        <h4 class="mb-0">上線使用者(<span id="numberOfOnlineUsers" class=""></span>)</h4>
+      </div>
+      <div class="users" id="online-users">
+        {{!-- DOM render user cards --}}
+      </div>
+    </div>
+    <div class="chat-room">
+      <header class="chatroom-header">
+        <h4 class="mb-0">公開聊天室</h4>
+      </header>
+      <div class="chat-messages">
+        {{!-- DOM render messages --}}
+      </div>
+      <form id="chat-form" class="chat-form-container">
+        <textarea name="message" rows="1" placeholder="輸入訊息..." autofocus required maxlength="500" id="msg"></textarea>
+        <button type="submit" id="text-submit-btn"><i class="fas fa-paper-plane"></i></button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.10.3/qs.min.js" integrity="sha512-juaCj8zi594KHQqb92foyp87mCSriYjw3BcTHaXsAn4pEB1YWh+z+XQScMxIxzsjfM4BeVFV3Ij113lIjWiC2w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/javascripts/socketio.js"></script>

@@ -164,7 +164,7 @@ h5 {
     grid-area: main;
     border: 1px solid #e6ecf0;
 }
-.profile-setting, .main, .top-users-list, .admin-main{
+.profile-setting, .main, .top-users-list, .admin-main, .online-users, .chat-room {
     overflow: scroll;
     overflow-x: hidden;
     overflow-y: auto;
@@ -691,4 +691,220 @@ textarea:hover, textarea:focus{
     animation-name: ghost;
     animation-duration: 900ms;
     animation-fill-mode: forwards;
+}
+
+/* chatroom 相關往下 */
+.chatroom-platform{
+    display: grid;
+    grid-template-columns: 1fr 178px 24px 300px 1px 650px 1fr;
+    grid-template-rows: 100%;
+    grid-template-areas: 'l left-side i online-users j chatroom k';
+    width: 100%;
+    height: 100%;
+}
+
+/* online-users 以下 */
+.online-users {
+    grid-area: online-users;
+    border-left: 1px solid #e6ecf0;
+    border-right: 1px solid #e6ecf0;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.online-users > .users {
+  flex: 1 0 0;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.online-users > .users > .user-card {
+  width: 90%;
+  height: 80px;
+  margin: 10px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  border-bottom: 1px solid #e6ecf0;
+}
+
+.online-users > .users > .user-card > img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 0;
+}
+
+.online-users > .users > .user-card > .user-file {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: start;
+  align-items: center;
+  width: 90%;
+  padding-left: 10px;
+}
+
+.online-users > .users > .user-card > .user-file > .who {
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.online-users > .users > .user-card > .user-file > .who > .name-place {
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: start;
+  align-items: center;
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.online-users > .users > .user-card > .user-file > .who > .last-call {
+  font-size: 15px;
+  line-height: 22px;
+  word-break: keep-all;
+}
+
+.online-users > .users > .user-card > .user-file > .who > .name-place > .name,
+.onlineChatroom > .title > .who > .name {
+  color: #1c1c1c;
+  font-weight: 700;
+  margin-right: 5px;
+  max-width: 40%;
+  word-break: keep-all;
+}
+
+.online-users > .users > .user-card > .user-file > .who > .name-place > .at-name,
+.online-users > .users > .user-card > .user-file > .who > .last-call {
+  color: #657786;
+  font-weight: 500;
+  word-break: keep-all;
+}
+
+/* chatroom 以下 */
+.chat-room {
+    grid-area: chatroom;
+    border-right: 1px solid #e6ecf0;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.online-users-header{
+    padding: 24px;
+    border-bottom: 1px solid #E6ECF0;
+}
+.online-users-header h4{
+    font-weight: 700;    
+}
+
+.chatroom-header{
+    padding: 24px;
+    border-bottom: 1px solid #E6ECF0;
+}
+.chatroom-header h4{
+    font-weight: 700;    
+}
+
+.chat-messages {
+  flex: 1 0 0;
+  padding: 10px;
+  color: #1c1c1c;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.self-message {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-end;
+}
+
+.self-message > .content {
+  border-radius: 25px 25px 0;
+  background-color: #f60;
+  color: #fff;
+  padding: 10px;
+}
+
+.other-message {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.other-message > img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.other-message > .message-box {
+  margin-left: 10px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+}
+
+.other-message > .message-box > .content {
+  border-radius: 25px 25px 25px 0;
+  background-color: #e6ecf0;
+  padding: 10px;
+}
+
+.chat-room > .chat-messages .time {
+  color: #657786;
+}
+
+.notice-message {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  color: #657786;
+  margin-bottom: 15px;
+}
+
+.notice-message.unread {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.notice-message.unread > .unread {
+  text-align: center;
+  width: 80%;
+}
+
+.notice-message > span {
+  background-color: #e5e5e5;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 4px 10px;
+}
+
+.chat-form-container {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  border-top: 1px solid #e6ecf0;
+}
+
+.chat-form-container > textarea {
+  flex: 1 0 0;
+  border: none;
+  border-radius: 15px;
+  background-color: #e6ecf0;
+  resize: none;
+  margin-right: 9px;
+  min-height: 30px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 18px;
+  padding: 6px 10px;
+  vertical-align: middle;
 }

@@ -10,9 +10,13 @@ const tweets = require('./modules/tweets')
 const adminController = require('../controllers/admin-controller')
 const userController = require('../controllers/user-controller')
 const apiController = require('../controllers/api-controller')
+const chatroomController = require('../controllers/chatroom-controller')
 
 const { authenticated } = require('../middleware/auth')
 const { generalErrorHandler } = require('../middleware/error-handler')
+
+// 聊天室路由入口
+router.get('/chatroom/public', authenticated, chatroomController.getPublic)
 
 // api 路由入口
 router.post('/api/users/:id', authenticated, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'avatar', maxCount: 1 }]), apiController.putUser)
