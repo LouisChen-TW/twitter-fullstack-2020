@@ -61,6 +61,8 @@ function noticeMessage (message) {
     <span class="content">${message}</span>
   `
   document.querySelector('.chat-messages').appendChild(div)
+  // scroll down
+  chatMessages.lastChild.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
 }
 
 // Output self message to DOM
@@ -88,6 +90,8 @@ function otherMessage (message) {
     </div>
   `
   document.querySelector('.chat-messages').appendChild(div)
+  // scroll down
+  chatMessages.lastChild.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
 }
 
 function outputUsers (users) {
