@@ -1,8 +1,8 @@
 const { Tweet, User, Reply } = require('../models')
 const helper = require('../_helpers')
 
-const replyController = {
-  getReplies: async (req, res, next) => {
+const replyService = {
+  getReplies: async (req, cb) => {
     try {
       const userId = helper.getUser(req).id
       const TweetId = req.params.tweetId
@@ -33,12 +33,12 @@ const replyController = {
         ...reply.toJSON()
       }))
 
-      res.render('reply', { tweet: tweetData, replies: repliesData, leftColTab: 'userHome' })
+      cb(null, { tweet: tweetData, replies: repliesData, leftColTab: 'userHome' })
     } catch (err) {
-      next(err)
+      cb(err)
     }
   },
-  postReplies: async (req, res, next) => {
+  postReplies: async (req, cb) => {
     try {
       const UserId = helper.getUser(req).id
       const TweetId = req.params.tweetId
@@ -47,12 +47,11 @@ const replyController = {
       if (comment.length > 140) throw new Error('送出回覆超過限制字數140個字')
       const reply = await Reply.create({ UserId, TweetId, comment })
       if (!reply) throw new Error('回覆不成功')
-      req.flash('success_messages', '成功送出回覆')
-      res.redirect('back')
+      cb(null, reply)
     } catch (err) {
-      next(err)
+      cb(err)
     }
   }
 }
 
-module.exports = replyController
+module.exports = replyService

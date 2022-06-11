@@ -70,7 +70,7 @@ const removeAllSpace = str => {
 
 const removeOuterSpace = str => {
   let newStr = ''
-  newStr = str.trim()
+  newStr = str?.trim() || newStr
   return newStr
 }
 

@@ -1,34 +1,10 @@
 const { Tweet, User, Reply, Like } = require('../models')
 const helper = require('../_helpers')
 
-const adminController = {
-  signInPage: async (req, res, next) => {
+const adminService = {
+  getTweets: async (req, cb) => {
     try {
-      res.render('admin/signin')
-    } catch (err) {
-      next(err)
-    }
-  },
-  signIn: async (req, res, next) => {
-    try {
-      req.flash('success_messages', '成功登入！')
-      res.redirect('/admin/tweets')
-    } catch (err) {
-      next(err)
-    }
-  },
-  logout: async (req, res, next) => {
-    try {
-      req.flash('success_messages', '登出成功！')
-      req.logout()
-      res.redirect('/admin/signin')
-    } catch (err) {
-      next(err)
-    }
-  },
-  getTweets: async (req, res, next) => {
-    try {
-      const userId = helper.getUser(req).id
+      const userId = helper.getUser(req)?.id
       const [user, tweets] = await Promise.all([
         User.findByPk(userId,
           {
@@ -47,12 +23,12 @@ const adminController = {
         ...tweet.toJSON(),
         description: tweet.description.substring(0, 50)
       }))
-      res.render('admin/tweets', { user, tweets: data, adminMenu: 'tweets' })
+      return cb(null, { user, tweets: data, adminMenu: 'tweets' })
     } catch (err) {
-      next(err)
+      cb(err)
     }
   },
-  deleteTweet: async (req, res, next) => {
+  deleteTweet: async (req, cb) => {
     try {
       const TweetId = req.params.id
       const tweet = await Tweet.findByPk(TweetId)
@@ -62,13 +38,12 @@ const adminController = {
       const like = await Like.destroy({ where: { TweetId } })
       if (!deletedTweet || !reply || !like) throw new Error('發生錯誤，請稍後再試')
 
-      req.flash('success_messages', '成功刪除')
-      res.redirect('back')
+      cb(null, deletedTweet)
     } catch (err) {
-      next(err)
+      cb(err)
     }
   },
-  getUsers: async (req, res, next) => {
+  getUsers: async (req, cb) => {
     try {
       const users = await User.findAll({
         where: { role: 'user' },
@@ -90,10 +65,11 @@ const adminController = {
         }, 0)
       }))
         .sort((a, b) => b.tweetCounts - a.tweetCounts)
-      res.render('admin/users', { users: data, adminMenu: 'users' })
+      cb(null, { users: data, adminMenu: 'users' })
     } catch (err) {
-      next(err)
+      cb(err)
     }
   }
 }
-module.exports = adminController
+
+module.exports = adminService

@@ -9,7 +9,7 @@ const passport = require('./config/passport')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
 const { getUser, handlebarsHelpers } = require('./_helpers')
-const routes = require('./routes')
+const { pages, apis } = require('./routes')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -38,7 +38,8 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use(routes)
+app.use('/api', apis)
+app.use(pages)
 
 app.use(express.static('public'))
 

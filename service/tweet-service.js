@@ -1,9 +1,8 @@
 const { Tweet, User, Reply } = require('../models')
 const helper = require('../_helpers')
-const apiServices = require('../service/api-services')
 
-const tweetController = {
-  getTweets: async (req, res, next) => {
+const tweetService = {
+  getTweets: async (req, cb) => {
     try {
       const userId = helper.getUser(req).id
       const [user, tweets] = await Promise.all([
@@ -28,12 +27,12 @@ const tweetController = {
         ...tweet.toJSON(),
         isLiked: tweet.LikedUsers.some(item => item.id === userId)
       }))
-      res.render('tweet', { user, tweets: data, leftColTab: 'userHome' })
+      cb(null, { user, tweets: data, leftColTab: 'userHome' })
     } catch (err) {
-      next(err)
+      cb(err)
     }
   },
-  postTweets: async (req, res, next) => {
+  postTweets: async (req, cb) => {
     try {
       const userId = helper.getUser(req).id
       const postDescription = helper.postValidation(req.body.description)
@@ -44,17 +43,11 @@ const tweetController = {
         description: postDescription
       })
       if (!tweet) throw new Error('推文不成功')
-      req.flash('success_messages', '成功送出推文')
-      res.redirect('/tweets')
+      cb(null, tweet)
     } catch (err) {
-      next(err)
+      cb(err)
     }
-  },
-  likeTweets: (req, res, next) => {
-    apiServices.likeTweets(req, (err, data) => err ? next(err) : res.status(302).json({ status: 'success', data }))
-  },
-  unlikeTweets: (req, res, next) => {
-    apiServices.unlikeTweets(req, (err, data) => err ? next(err) : res.status(302).json({ status: 'success', data }))
   }
 }
-module.exports = tweetController
+
+module.exports = tweetService
