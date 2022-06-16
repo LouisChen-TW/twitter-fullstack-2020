@@ -3,7 +3,7 @@ const router = express.Router()
 const passport = require('passport')
 
 const { generalErrorHandler } = require('../../middleware/error-handler')
-const { authenticated, authenticatedAdmin } = require('../../middleware/auth')
+const { authenticated, authenticatedUser, authenticatedAdmin } = require('../../middleware/auth')
 
 const adminController = require('../../controllers/pages/admin-controller')
 const userController = require('../../controllers/pages/user-controller')
@@ -19,7 +19,7 @@ router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post(
   '/signin',
-  passport.authenticate('user-local', {
+  passport.authenticate('local', {
     failureRedirect: '/signin',
     failureFlash: true
   }),
@@ -31,7 +31,7 @@ router.get('/logout', userController.logout)
 router.get('/admin/signin', adminController.signInPage)
 router.post(
   '/admin/signin',
-  passport.authenticate('admin-local', {
+  passport.authenticate('local', {
     failureRedirect: '/admin/signin',
     failureFlash: true
   }),
@@ -39,9 +39,9 @@ router.post(
 )
 
 router.use('/admin', authenticated, authenticatedAdmin, admin)
-router.use('/users', authenticated, users)
-router.use('/tweets', authenticated, tweets)
-router.use('/followships', authenticated, followships)
+router.use('/users', authenticated, authenticatedUser, users)
+router.use('/tweets', authenticated, authenticatedUser, tweets)
+router.use('/followships', authenticated, authenticatedUser, followships)
 
 // fallback 路由
 router.get('*', (req, res) => {

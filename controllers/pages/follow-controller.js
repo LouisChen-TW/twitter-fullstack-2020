@@ -15,7 +15,10 @@ const followController = {
   },
   addFollowing: (req, res, next) => {
     followService.addFollowing(req, (err, data) => {
-      if (err) return next(err)
+      if (err) {
+        req.flash('error_messages', err.message)
+        return res.redirect(200, 'back')
+      }
       req.flash('success_messages', '成功追蹤')
       return res.redirect('back')
     })

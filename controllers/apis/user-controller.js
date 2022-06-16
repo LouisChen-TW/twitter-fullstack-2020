@@ -37,7 +37,10 @@ const userController = {
     userService.getLikedTweets(req, (err, data) => err ? next(err) : res.status(200).json({ status: 'success', data }))
   },
   getUser: (req, res, next) => {
-    userService.getUser(req, (err, data) => err ? next(err) : res.status(200).json({ status: 'success', data }))
+    userService.getUser(req, (err, data) => {
+      if (err) return res.status(200).json({ status: 'error' })
+      res.status(200).json({ status: 'success', ...data })
+    })
   },
   putUser: (req, res, next) => {
     userService.putUser(req, (err, data) => err ? next(err) : res.status(200).json({ status: 'success', message: '成功編輯個人資料' }))

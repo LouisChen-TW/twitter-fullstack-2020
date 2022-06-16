@@ -1,13 +1,16 @@
 const express = require('express')
 const router = express.Router()
 
-const passport = require('../../config/passport')
 const upload = require('../../middleware/multer')
+const passport = require('../../config/passport')
 const { apiErrorHandler } = require('../../middleware/error-handler')
 const { authenticated, authenticatedAdmin } = require('../../middleware/api-auth')
+const pageAuth = require('../../middleware/auth')
 
 const userController = require('../../controllers/apis/user-controller')
-const apiController = require('../../controllers/pages/api-controller')
+
+router.get('/users/:id', pageAuth.authenticated, pageAuth.authenticatedUser, userController.getUser)
+router.post('/users/:id', pageAuth.authenticated, pageAuth.authenticatedUser, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'avatar', maxCount: 1 }]), userController.putUser)
 
 const admin = require('./modules/admin')
 const users = require('./modules/users')
