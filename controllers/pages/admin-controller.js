@@ -10,6 +10,11 @@ const adminController = {
   },
   signIn: async (req, res, next) => {
     try {
+      if (req.user.role !== 'admin') {
+        req.flash('error_messages', '此帳號不存在！')
+        req.logout()
+        return res.redirect('/admin/signin')
+      }
       req.flash('success_messages', '成功登入！')
       res.redirect('/admin/tweets')
     } catch (err) {

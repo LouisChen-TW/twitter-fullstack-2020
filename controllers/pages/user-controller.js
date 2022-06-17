@@ -27,6 +27,11 @@ const userController = {
   },
   signIn: async (req, res, next) => {
     try {
+      if (req.user.role !== 'user') {
+        req.flash('error_messages', '此帳號不存在！')
+        req.logout()
+        return res.redirect('/signin')
+      }
       req.flash('success_messages', '成功登入！')
       res.redirect('/tweets')
     } catch (err) {
