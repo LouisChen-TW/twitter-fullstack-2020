@@ -21,15 +21,6 @@ const adminController = {
       next(err)
     }
   },
-  logout: async (req, res, next) => {
-    try {
-      req.flash('success_messages', '登出成功！')
-      req.logout()
-      res.redirect('/admin/signin')
-    } catch (err) {
-      next(err)
-    }
-  },
   getTweets: (req, res, next) => {
     adminService.getTweets(req, (err, data) => err ? next(err) : res.render('admin/tweets', data))
   },

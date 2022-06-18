@@ -8,6 +8,7 @@ const { authenticated, authenticatedAdmin } = require('../../middleware/api-auth
 const pageAuth = require('../../middleware/auth')
 
 const userController = require('../../controllers/apis/user-controller')
+const adminController = require('../../controllers/apis/admin-controller')
 
 router.get('/users/:id', pageAuth.authenticated, pageAuth.authenticatedUser, userController.getUser)
 router.post('/users/:id', pageAuth.authenticated, pageAuth.authenticatedUser, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'avatar', maxCount: 1 }]), userController.putUser)
@@ -18,9 +19,10 @@ const tweets = require('./modules/tweets')
 const followships = require('./modules/followships')
 
 // api user&admin登入、註冊
-router.post('/admin/signin', passport.authenticate('admin-local', { session: false }), userController.signIn)
-router.post('/signin', passport.authenticate('user-local', { session: false }), userController.signIn)
+router.post('/admin/signin', passport.authenticate('local', { session: false }), adminController.signIn)
+router.post('/signin', passport.authenticate('local', { session: false }), userController.signIn)
 router.post('/signup', userController.signUp)
+router.get('/logout', userController.logout)
 
 router.use('/admin', authenticated, authenticatedAdmin, admin)
 router.use('/users', authenticated, users)

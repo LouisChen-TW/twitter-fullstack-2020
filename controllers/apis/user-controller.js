@@ -4,14 +4,17 @@ const userService = require('../../service/user-service')
 const userController = {
   signIn: (req, res, next) => {
     try {
-      const userData = req.user.toJSON()
-      delete userData.password
-      const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '30d' })
+      const user = req.user
+      if (!user) throw new Error('帳號或密碼錯誤')
+      if (user.role !== 'user') throw new Error('帳號或密碼錯誤')
+      delete user.password
+      const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '30d' })
+      res.cookie('jwt', token, { expiresIn: '30d', httpOnly: true })
       res.json({
         status: 'success',
         data: {
           token,
-          user: userData
+          user
         }
       })
     } catch (err) {
@@ -26,6 +29,15 @@ const userController = {
       }
       return res.status(200).json({ status: 'success', message: 'Account has been created successfully' })
     })
+  },
+  logout: (req, res, next) => {
+    try {
+      req.flash('success_messages', '登出成功！')
+      res.cookie('jwt', 'logout', { expiresIn: '10s', httpOnly: true })
+      res.redirect('/signin')
+    } catch (err) {
+      next(err)
+    }
   },
   getTweets: (req, res, next) => {
     userService.getTweets(req, (err, data) => err ? next(err) : res.status(200).json({ status: 'success', data }))

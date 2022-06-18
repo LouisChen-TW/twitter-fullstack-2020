@@ -25,7 +25,6 @@ router.post(
   }),
   userController.signIn
 )
-router.get('/logout', userController.logout)
 
 // admin 登入、登出路由
 router.get('/admin/signin', adminController.signInPage)

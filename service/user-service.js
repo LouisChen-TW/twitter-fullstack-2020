@@ -82,8 +82,7 @@ const userService = {
           isLiked: tweet.LikedUsers.some(item => item.id === userId)
         }
       }, tweets)
-
-      cb(null, { queryUser, tweets, tab: 'getTweets', leftColTab: 'userInfo' })
+      cb(null, { user: queryUser, tweets, tab: 'getTweets', leftColTab: 'userInfo' })
     } catch (err) {
       cb(err)
     }
@@ -236,7 +235,7 @@ const userService = {
       const queryUser = queryUserData.toJSON()
       delete queryUser.password
 
-      cb(null, { queryUser, leftColTab: 'userSetting' })
+      cb(null, { user: queryUser, leftColTab: 'userSetting' })
     } catch (err) {
       cb(err)
     }

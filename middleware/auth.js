@@ -1,19 +1,24 @@
 const helpers = require('../_helpers')
+const passport = require('../config/passport')
+
 const authenticated = (req, res, next) => {
-  if (helpers.ensureAuthenticated(req)) return next()
-  req.flash('warning_messages', '請先登入才能使用！')
-  return res.redirect('/signin')
+  passport.authenticate('jwt', { session: false }, (err, user) => {
+    if (err || !user) {
+      req.flash('warning_messages', '請先登入才能使用！')
+      return res.redirect('/signin')
+    }
+    return next()
+  })(req, res, next)
 }
 
 const authenticatedUser = (req, res, next) => {
-  if (helpers.getUser(req).role !== 'admin') return next()
-  req.flash('warning_messages', '請先登入才能使用！')
+  if (req.user && req.user.role === 'user') return next()
+  req.flash('warning_messages', '請從前台登入才能使用！')
   return res.redirect('/admin/tweets')
 }
 
 const authenticatedAdmin = (req, res, next) => {
-  if (helpers.getUser(req).role === 'admin') return next()
-
+  if (req.user && req.user.role === 'admin') return next()
   req.flash('warning_messages', '請從後台登入才能使用！')
   return res.redirect('/tweets')
 }

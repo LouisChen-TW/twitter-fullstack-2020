@@ -18,26 +18,47 @@ passport.use(
     async (req, account, password, cb) => {
       const user = await User.findOne({ where: { account } })
       if (!user) {
+        // return cb(
+        //   null,
+        //   false,
+        //   req.flash('error_messages', '帳號或密碼輸入錯誤！')
+        // )
         return cb(
           null,
           false,
-          req.flash('error_messages', '帳號或密碼輸入錯誤！')
+          { message: '帳號或密碼輸入錯誤！' }
         )
       }
       if (!bcrypt.compareSync(password, user.password)) {
+        // return cb(
+        //   null,
+        //   false,
+        //   req.flash('error_messages', '帳號或密碼輸入錯誤！')
+        // )
         return cb(
           null,
           false,
-          req.flash('error_messages', '帳號或密碼輸入錯誤！')
+          { message: '帳號或密碼輸入錯誤！' }
         )
       }
-      return cb(null, user)
+      return cb(null, user.toJSON())
     }
   )
 )
 
+const cookieExtractor = req => {
+  let token = null
+  if (req && req.cookies) {
+    token = req.cookies.jwt
+  }
+  return token
+}
+
 const jwtOptions = {
-  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+  jwtFromRequest: ExtractJWT.fromExtractors([
+    ExtractJWT.fromAuthHeaderAsBearerToken(),
+    cookieExtractor
+  ]),
   secretOrKey: process.env.JWT_SECRET,
   passReqToCallback: true
 }

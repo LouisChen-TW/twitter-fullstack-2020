@@ -38,15 +38,6 @@ const userController = {
       next(err)
     }
   },
-  logout: async (req, res, next) => {
-    try {
-      req.flash('success_messages', '登出成功！')
-      req.logout()
-      res.redirect('/signin')
-    } catch (err) {
-      next(err)
-    }
-  },
   getTweets: (req, res, next) => {
     userService.getTweets(req, (err, data) => {
       if (err) return next(err)
