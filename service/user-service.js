@@ -44,7 +44,7 @@ const userService = {
       const userId = Number(helpers.getUser(req).id)
       const queryUserId = Number(req.params.id)
 
-      const [queryUserData, tweets] = await Promise.all([
+      const [queryUserData, tweets, originalUser] = await Promise.all([
         User.findByPk(queryUserId, {
           include: [
             { model: User, as: 'Followers', attributes: ['id'] },
@@ -67,7 +67,8 @@ const userService = {
           ],
           where: { UserId: queryUserId },
           order: [['createdAt', 'DESC']]
-        })
+        }),
+        User.findByPk(userId, { attributes: ['id'], raw: true })
       ])
       if (!queryUserData) throw new AppError('使用者不存在 !', 400)
 
@@ -83,7 +84,7 @@ const userService = {
           isLiked: tweet.LikedUsers.some(item => item.id === userId)
         }
       }, tweets)
-      cb(null, { user: queryUser, tweets, tab: 'getTweets', leftColTab: 'userInfo' })
+      cb(null, { user: originalUser, queryUser, tweets, tab: 'getTweets', leftColTab: 'userInfo' })
     } catch (err) {
       cb(err)
     }
@@ -93,7 +94,7 @@ const userService = {
       const userId = Number(helpers.getUser(req).id)
       const queryUserId = Number(req.params.id)
 
-      const [queryUserData, replies] = await Promise.all([
+      const [queryUserData, replies, originalUser] = await Promise.all([
         User.findByPk(queryUserId, {
           include: [
             { model: User, as: 'Followers', attributes: ['id'] },
@@ -114,7 +115,8 @@ const userService = {
             }
           ],
           order: [['createdAt', 'DESC']]
-        })
+        }),
+        User.findByPk(userId, { attributes: ['id'], raw: true })
       ])
       if (!queryUserData) throw new AppError('使用者不存在 !', 400)
 
@@ -128,7 +130,7 @@ const userService = {
         this[index] = { ...reply.toJSON() }
       }, replies)
 
-      cb(null, { user: queryUser, replies, tab: 'getReplies', leftColTab: 'userInfo' })
+      cb(null, { user: originalUser, queryUser, replies, tab: 'getReplies', leftColTab: 'userInfo' })
     } catch (err) {
       cb(err)
     }
@@ -138,7 +140,7 @@ const userService = {
       const userId = Number(helpers.getUser(req).id)
       const queryUserId = Number(req.params.id)
 
-      const [queryUserData, likedTweets] = await Promise.all([
+      const [queryUserData, likedTweets, originalUser] = await Promise.all([
         User.findByPk(queryUserId, {
           include: [
             { model: User, as: 'Followers', attributes: ['id'] },
@@ -159,7 +161,8 @@ const userService = {
             ]
           }],
           order: [['createdAt', 'DESC']]
-        })
+        }),
+        User.findByPk(userId, { attributes: ['id'], raw: true })
       ])
       if (!queryUserData) throw new AppError("User didn't exist!", 400)
 
@@ -177,7 +180,7 @@ const userService = {
         .getUser(req)
         .Followings.some(item => item.id === queryUser.id)
 
-      cb(null, { user: queryUser, likedTweets, tab: 'getLikedTweets', leftColTab: 'userInfo' })
+      cb(null, { user: originalUser, queryUser, likedTweets, tab: 'getLikedTweets', leftColTab: 'userInfo' })
     } catch (err) {
       cb(err)
     }

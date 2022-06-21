@@ -8,7 +8,7 @@ const followService = {
       const userId = Number(helpers.getUser(req).id)
       const queryUserId = Number(req.params.id)
 
-      const [queryUserData] = await Promise.all([
+      const [queryUserData, originalUser] = await Promise.all([
         User.findByPk(queryUserId, {
           include: [
             {
@@ -19,7 +19,8 @@ const followService = {
             },
             { model: Tweet, attributes: ['id'] }
           ]
-        })
+        }),
+        User.findByPk(userId, { attributes: ['id'], raw: true })
       ])
       if (!queryUserData) throw new AppError('使用者不存在 !', 400)
 
@@ -34,7 +35,8 @@ const followService = {
           .Followings.some(item => item.id === user.id)
         user.isSelf = user.id !== userId
       })
-      cb(null, { queryUser, tab: 'getFollowers' })
+      console.log(originalUser)
+      cb(null, { user: originalUser, queryUser, tab: 'getFollowers' })
     } catch (err) {
       cb(err)
     }
@@ -44,7 +46,7 @@ const followService = {
       const userId = Number(helpers.getUser(req).id)
       const queryUserId = Number(req.params.id)
 
-      const [queryUserData] = await Promise.all([
+      const [queryUserData, originalUser] = await Promise.all([
         User.findByPk(queryUserId, {
           include: [
             {
@@ -56,11 +58,7 @@ const followService = {
             { model: Tweet, attributes: ['id'] }
           ]
         }),
-        User.findAll({
-          attributes: ['id', 'name', 'account', 'avatar'],
-          include: [{ model: User, as: 'Followers', attributes: ['id'] }],
-          where: [{ role: 'user' }]
-        })
+        User.findByPk(userId, { attributes: ['id'], raw: true })
       ])
       if (!queryUserData) throw new AppError('使用者不存在 !', 400)
 
@@ -75,7 +73,7 @@ const followService = {
           .Followings.some(item => item.id === user.id)
         user.isSelf = user.id !== userId
       })
-      cb(null, { queryUser, tab: 'getFollowings' })
+      cb(null, { user: originalUser, queryUser, tab: 'getFollowings' })
     } catch (err) {
       cb(err)
     }
