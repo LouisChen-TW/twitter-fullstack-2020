@@ -1,3 +1,5 @@
+const AppError = require('./appError')
+
 module.exports = {
   generalErrorHandler (err, req, res, next) {
     if (err instanceof Error) {
@@ -9,8 +11,8 @@ module.exports = {
     next(err)
   },
   apiErrorHandler (err, req, res, next) {
-    if (err instanceof Error) {
-      res.status(500).json({
+    if (err instanceof AppError) {
+      res.status(err.statusCode).json({
         status: 'error',
         message: `${err.name}: ${err.message}`
       })

@@ -1,5 +1,6 @@
 const { User, Tweet, Followship } = require('../models')
 const helpers = require('../_helpers')
+const AppError = require('.././middleware/appError')
 
 const followService = {
   getFollowers: async (req, cb) => {
@@ -20,7 +21,7 @@ const followService = {
           ]
         })
       ])
-      if (!queryUserData) throw new Error('使用者不存在 !')
+      if (!queryUserData) throw new AppError('使用者不存在 !', 400)
 
       const queryUser = queryUserData.toJSON()
       queryUser.isSelf = queryUserId === userId
@@ -61,7 +62,7 @@ const followService = {
           where: [{ role: 'user' }]
         })
       ])
-      if (!queryUserData) throw new Error('使用者不存在 !')
+      if (!queryUserData) throw new AppError('使用者不存在 !', 400)
 
       const queryUser = queryUserData.toJSON()
       queryUser.isSelf = queryUserId === userId
@@ -83,18 +84,18 @@ const followService = {
     try {
       const userId = Number(helpers.getUser(req).id)
       const queryUserId = Number(req.body.id)
-      if (userId === queryUserId) throw new Error('您不能追蹤自己 !')
+      if (userId === queryUserId) throw new AppError('您不能追蹤自己 !', 400)
 
       const user = await User.findByPk(userId, {
         include: [{ model: User, as: 'Followings', attributes: ['id'] }]
       })
-      if (!user) throw new Error('使用者不存在 !')
+      if (!user) throw new AppError('使用者不存在 !', 400)
 
       const queryUser = await User.findByPk(queryUserId, { raw: true })
-      if (!queryUser) throw new Error('使用者不存在 !')
+      if (!queryUser) throw new AppError('使用者不存在 !', 400)
 
       const followingUserId = user.Followings.map(user => user.id)
-      if (followingUserId.includes(queryUserId)) throw new Error('您已經追蹤過此使用者了 !')
+      if (followingUserId.includes(queryUserId)) throw new AppError('您已經追蹤過此使用者了 !', 400)
 
       const followShip = await Followship.create({ followerId: userId, followingId: queryUserId })
       cb(null, followShip)
@@ -106,18 +107,18 @@ const followService = {
     try {
       const userId = Number(helpers.getUser(req).id)
       const queryUserId = Number(req.params.id)
-      if (userId === queryUserId) throw new Error('您不能取消追蹤自己 !')
+      if (userId === queryUserId) throw new AppError('您不能取消追蹤自己 !', 400)
 
       const user = await User.findByPk(userId, {
         include: [{ model: User, as: 'Followings', attributes: ['id'] }]
       })
-      if (!user) throw new Error('使用者不存在 !')
+      if (!user) throw new AppError('使用者不存在 !', 400)
 
       const queryUser = await User.findByPk(queryUserId, { raw: true })
-      if (!queryUser) throw new Error('使用者不存在 !')
+      if (!queryUser) throw new AppError('使用者不存在 !', 400)
 
       const followingUserId = user.Followings.map(user => user.id)
-      if (!followingUserId.includes(queryUserId)) throw new Error('您還未追蹤此使用者 !')
+      if (!followingUserId.includes(queryUserId)) throw new AppError('您還未追蹤此使用者 !', 400)
 
       const followShip = await Followship.destroy({
         where: { followerId: userId, followingId: queryUserId }

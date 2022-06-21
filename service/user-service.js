@@ -2,6 +2,7 @@ const { User, Tweet, Reply, Like } = require('../models')
 const bcrypt = require('bcrypt-nodejs')
 const { removeAllSpace, removeOuterSpace } = require('../_helpers')
 const helpers = require('../_helpers')
+const AppError = require('.././middleware/appError')
 
 const userService = {
   signUp: async (req, cb) => {
@@ -68,7 +69,7 @@ const userService = {
           order: [['createdAt', 'DESC']]
         })
       ])
-      if (!queryUserData) throw new Error('使用者不存在 !')
+      if (!queryUserData) throw new AppError('使用者不存在 !', 400)
 
       const queryUser = queryUserData.toJSON()
       queryUser.isSelf = queryUserId === userId
@@ -115,7 +116,7 @@ const userService = {
           order: [['createdAt', 'DESC']]
         })
       ])
-      if (!queryUserData) throw new Error('使用者不存在 !')
+      if (!queryUserData) throw new AppError('使用者不存在 !', 400)
 
       const queryUser = queryUserData.toJSON()
       queryUser.isSelf = queryUserId === userId
@@ -160,7 +161,7 @@ const userService = {
           order: [['createdAt', 'DESC']]
         })
       ])
-      if (!queryUserData) throw new Error("User didn't exist!")
+      if (!queryUserData) throw new AppError("User didn't exist!", 400)
 
       likedTweets.forEach(function (likedTweet, index) {
         this[index] = {
@@ -202,16 +203,16 @@ const userService = {
       const queryUserId = Number(req.params.id)
       const { name, introduction, acCover } = req.body
 
-      if (name?.length > 50) throw new Error('名稱長度限制 50 字元以內 !')
-      if (introduction?.length > 160) throw new Error('名稱長度限制 160 字元以內 !')
-      if (userId !== queryUserId) throw new Error('您無權限編輯使用者 !')
+      if (name?.length > 50) throw new AppError('名稱長度限制 50 字元以內 !', 400)
+      if (introduction?.length > 160) throw new AppError('名稱長度限制 160 字元以內 !', 400)
+      if (userId !== queryUserId) throw new AppError('您無權限編輯使用者 !', 400)
 
       const cover = req.files?.cover
       const avatar = req.files?.avatar
 
       const [queryUser, coverFilePath, avatarFilePath] = await Promise.all([User.findByPk(queryUserId), cover ? helpers.imgurFileHandler(cover[0]) : null, avatar ? helpers.imgurFileHandler(avatar[0]) : null])
 
-      if (!queryUser) throw new Error('使用者不存在 !')
+      if (!queryUser) throw new AppError('使用者不存在 !', 400)
 
       const updatedQueryUser = await queryUser.update({ name, introduction, cover: coverFilePath || acCover || queryUser.cover, avatar: avatarFilePath || queryUser.avatar })
 
@@ -227,10 +228,10 @@ const userService = {
     try {
       const userId = Number(helpers.getUser(req).id)
       const queryUserId = Number(req.params.id)
-      if (userId !== queryUserId) throw new Error('您沒有權限瀏覽他人頁面 !')
+      if (userId !== queryUserId) throw new AppError('您沒有權限瀏覽他人頁面 !', 403)
 
       const queryUserData = await User.findByPk(queryUserId)
-      if (!queryUserData) throw new Error('使用者不存在 !')
+      if (!queryUserData) throw new AppError('使用者不存在 !', 400)
 
       const queryUser = queryUserData.toJSON()
       delete queryUser.password

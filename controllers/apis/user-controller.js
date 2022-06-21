@@ -25,7 +25,7 @@ const userController = {
     userService.signUp(req, (err, data) => {
       if (err) return next(err)
       if (data.errors_messages) {
-        return res.status(500).json({ status: 'error', message: [...data.errors_messages.map(item => (item.message))] })
+        return res.status(400).json({ status: 'error', message: [...data.errors_messages.map(item => (item.message))] })
       }
       return res.status(200).json({ status: 'success', message: 'Account has been created successfully' })
     })

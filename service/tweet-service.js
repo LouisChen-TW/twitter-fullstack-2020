@@ -1,6 +1,8 @@
 const { Tweet, User, Reply } = require('../models')
 const helper = require('../_helpers')
 
+const AppError = require('.././middleware/appError')
+
 const tweetService = {
   getTweets: async (req, cb) => {
     try {
@@ -36,13 +38,13 @@ const tweetService = {
     try {
       const userId = helper.getUser(req).id
       const postDescription = helper.postValidation(req.body.description)
-      if (postDescription.length <= 0) throw new Error('送出推文不可為空白')
-      if (postDescription.length > 140) throw new Error('送出推文超過限制字數140個字')
+      if (postDescription.length <= 0) throw new AppError('送出推文不可為空白', 400)
+      if (postDescription.length > 140) throw new AppError('送出推文超過限制字數140個字', 400)
       const tweet = await Tweet.create({
         UserId: userId,
         description: postDescription
       })
-      if (!tweet) throw new Error('推文不成功')
+      if (!tweet) throw new AppError('推文不成功', 500)
       cb(null, tweet)
     } catch (err) {
       cb(err)

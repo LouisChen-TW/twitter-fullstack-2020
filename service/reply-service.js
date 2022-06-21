@@ -1,5 +1,6 @@
 const { Tweet, User, Reply } = require('../models')
 const helper = require('../_helpers')
+const AppError = require('.././middleware/appError')
 
 const replyService = {
   getReplies: async (req, cb) => {
@@ -22,7 +23,7 @@ const replyService = {
           include: [{ model: User, attributes: ['id', 'name', 'account', 'avatar'] }]
         })
       ])
-      if (!tweet) throw new Error('此篇貼文不存在')
+      if (!tweet) throw new AppError('此篇貼文不存在', 400)
 
       const tweetData = {
         ...tweet.toJSON(),
@@ -43,10 +44,10 @@ const replyService = {
       const UserId = helper.getUser(req).id
       const TweetId = req.params.tweetId
       const comment = helper.postValidation(req.body.comment)
-      if (comment.length <= 0) throw new Error('送出回覆不可為空白')
-      if (comment.length > 140) throw new Error('送出回覆超過限制字數140個字')
+      if (comment.length <= 0) throw new AppError('送出回覆不可為空白', 400)
+      if (comment.length > 140) throw new AppError('送出回覆超過限制字數140個字', 400)
       const reply = await Reply.create({ UserId, TweetId, comment })
-      if (!reply) throw new Error('回覆不成功')
+      if (!reply) throw new AppError('回覆不成功', 400)
       cb(null, reply)
     } catch (err) {
       cb(err)

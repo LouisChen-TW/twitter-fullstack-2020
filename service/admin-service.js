@@ -1,5 +1,6 @@
 const { Tweet, User, Reply, Like } = require('../models')
 const helper = require('../_helpers')
+const AppError = require('.././middleware/appError')
 
 const adminService = {
   getTweets: async (req, cb) => {
@@ -32,11 +33,11 @@ const adminService = {
     try {
       const TweetId = req.params.id
       const tweet = await Tweet.findByPk(TweetId)
-      if (!tweet) throw new Error("Tweet didn't exist!")
+      if (!tweet) throw new AppError("Tweet didn't exist!", 400)
       const deletedTweet = await tweet.destroy()
       const reply = await Reply.destroy({ where: { TweetId } })
       const like = await Like.destroy({ where: { TweetId } })
-      if (!deletedTweet || !reply || !like) throw new Error('發生錯誤，請稍後再試')
+      if (!deletedTweet || !reply || !like) throw new AppError('發生錯誤，請稍後再試', 400)
 
       cb(null, deletedTweet)
     } catch (err) {
