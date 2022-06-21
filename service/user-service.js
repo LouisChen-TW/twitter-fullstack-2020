@@ -128,7 +128,7 @@ const userService = {
         this[index] = { ...reply.toJSON() }
       }, replies)
 
-      cb(null, { queryUser, replies, tab: 'getReplies', leftColTab: 'userInfo' })
+      cb(null, { user: queryUser, replies, tab: 'getReplies', leftColTab: 'userInfo' })
     } catch (err) {
       cb(err)
     }
@@ -177,7 +177,7 @@ const userService = {
         .getUser(req)
         .Followings.some(item => item.id === queryUser.id)
 
-      cb(null, { queryUser, likedTweets, tab: 'getLikedTweets', leftColTab: 'userInfo' })
+      cb(null, { user: queryUser, likedTweets, tab: 'getLikedTweets', leftColTab: 'userInfo' })
     } catch (err) {
       cb(err)
     }
