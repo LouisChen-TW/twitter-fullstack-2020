@@ -25,7 +25,7 @@ userEditBtn?.addEventListener('click', async e => {
     const target = e.target
     const queryUserId = target.dataset.id
 
-    const res = await axios.get(`${BASE_URL}users/${queryUserId}`)
+    const res = await axios.get(`${BASE_URL}api/users/${queryUserId}`)
     const userInfo = res.data
 
     userModalName.value = userInfo.name || ''
@@ -93,7 +93,7 @@ userEditModal?.addEventListener('submit', async e => {
   formData.append('name', userModalName.value)
   formData.append('introduction', userModalIntroduction.value)
   userModalCover.src === acCover ? formData.append('acCover', 'https://i.imgur.com/OrTW5at.png') : formData.append('acCover', '')
-  const res = await axios.post(`${BASE_URL}users/${queryUserId}`, formData, {
+  const res = await axios.post(`${BASE_URL}api/users/${queryUserId}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
